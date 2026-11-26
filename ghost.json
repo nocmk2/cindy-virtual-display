@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 3,
+  "minCindyVersion": "0.1.148",
+  "id": "virtual-display",
+  "name": "Virtual Display",
+  "icon": "assets/icon.png",
+  "command": "vdisplay",
+  "description": "在 macOS 上创建和管理虚拟显示器，支持常用分辨率与 HiDPI，方便无头 Mac 远程桌面和保活",
+  "whenToUse": "当用户需要在 macOS 上创建、查看、调整分辨率或关闭虚拟显示器（软件替代 HDMI 欺骗器），用于无物理显示器 Mac 远程桌面或应用保活时使用。",
+  "version": "1.0.0",
+  "kind": "chip",
+  "entry": "main.js",
+  "panel": {
+    "title": "Virtual Display",
+    "html": "panel.html",
+    "position": "tab"
+  },
+  "tools": [
+    {
+      "name": "list_displays",
+      "description": "列出当前 macOS 所有在线显示器（物理屏与虚拟屏）以及本插件托管的虚拟显示器列表和可用分辨率预设。",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "create_virtual_display",
+      "description": "在 macOS 上创建一个虚拟显示器并返回 handleId、displayID 及最新显示器列表。支持预设（1080p、1440p、1440x900、1280x720、4k）或自定义宽高、刷新率与 HiDPI。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "preset": {
+            "type": "string",
+            "enum": ["1080p", "1440p", "1440x900", "1280x720", "4k"],
+            "description": "可选快捷预设，缺省为 1080p (1920x1080@60Hz HiDPI)"
+          },
+          "name": {
+            "type": "string",
+            "description": "可选显示器名称，缺省为 Cindy Virtual Display"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 640,
+            "maximum": 7680,
+            "description": "可选逻辑宽度（像素），传入时覆盖预设宽度"
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 480,
+            "maximum": 4320,
+            "description": "可选逻辑高度（像素），传入时覆盖预设高度"
+          },
+          "refreshRate": {
+            "type": "integer",
+            "minimum": 24,
+            "maximum": 240,
+            "description": "可选刷新率（Hz），缺省 60"
+          },
+          "hiDPI": {
+            "type": "boolean",
+            "description": "是否启用 HiDPI (Retina 2x)，缺省随预设或 true"
+          }
+        }
+      }
+    },
+    {
+      "name": "update_virtual_display",
+      "description": "修改已创建托管虚拟显示器的分辨率、刷新率、HiDPI 或名称，返回更新后的显示器信息。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "handleId": {
+            "type": "string",
+            "description": "要修改的虚拟显示器 handleId（如 vd-1，可从 list_displays 获取）"
+          },
+          "preset": {
+            "type": "string",
+            "enum": ["1080p", "1440p", "1440x900", "1280x720", "4k"],
+            "description": "可选目标预设"
+          },
+          "name": {
+            "type": "string",
+            "description": "可选新名称"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 640,
+            "maximum": 7680,
+            "description": "可选新逻辑宽度"
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 480,
+            "maximum": 4320,
+            "description": "可选新逻辑高度"
+          },
+          "refreshRate": {
+            "type": "integer",
+            "minimum": 24,
+            "maximum": 240,
+            "description": "可选新刷新率（Hz）"
+          },
+          "hiDPI": {
+            "type": "boolean",
+            "description": "是否启用 HiDPI"
+          }
+        },
+        "required": ["handleId"]
+      }
+    },
+    {
+      "name": "destroy_virtual_display",
+      "description": "关闭并移除由本插件创建的虚拟显示器。可按 handleId 关闭单个，或传 all: true 关闭全部托管虚拟屏。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "handleId": {
+            "type": "string",
+            "description": "要关闭的托管虚拟屏 handleId（如 vd-1）"
+          },
+          "all": {
+            "type": "boolean",
+            "description": "设为 true 时关闭本插件创建的全部虚拟屏"
+          }
+        }
+      }
+    }
+  ],
+  "node": {
+    "entry": "node/worker.cjs",
+    "protocol": "json-rpc-stdio",
+    "lifecycle": "resident"
+  }
+}

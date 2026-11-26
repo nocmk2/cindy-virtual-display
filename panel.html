@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Virtual Display</title>
+  <link rel="stylesheet" href="/panel.css">
+</head>
+<body>
+  <div class="app">
+    <section class="header-bar">
+      <div class="header-meta">
+        <span class="status-dot" id="statusDot"></span>
+        <span class="status-text" id="statusText">正在检测显示器…</span>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="btn btn-ghost" id="refreshBtn">刷新</button>
+        <button type="button" class="btn btn-danger-ghost" id="destroyAllBtn" hidden>全部关闭</button>
+      </div>
+    </section>
+
+    <div class="banner banner-error" id="errorBanner" hidden></div>
+    <div class="banner banner-info" id="infoBanner" hidden></div>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>快速创建虚拟屏</h2>
+        <span class="hint">点一下即插入虚拟显示器</span>
+      </div>
+      <div class="preset-grid" id="presetGrid"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>自定义创建</h2>
+      </div>
+      <form class="custom-form" id="createForm">
+        <div class="field-row">
+          <label class="field">
+            <span>名称</span>
+            <input type="text" id="nameInput" maxlength="64" value="Cindy Virtual Display" placeholder="Cindy Virtual Display">
+          </label>
+        </div>
+        <div class="field-row cols-3">
+          <label class="field">
+            <span>宽度 (px)</span>
+            <input type="number" id="widthInput" min="640" max="7680" step="1" value="1920" required>
+          </label>
+          <label class="field">
+            <span>高度 (px)</span>
+            <input type="number" id="heightInput" min="480" max="4320" step="1" value="1080" required>
+          </label>
+          <label class="field">
+            <span>刷新率 (Hz)</span>
+            <input type="number" id="refreshInput" min="24" max="240" step="1" value="60" required>
+          </label>
+        </div>
+        <div class="form-footer">
+          <label class="checkbox-label">
+            <input type="checkbox" id="hidpiInput" checked>
+            <span>启用 HiDPI (Retina 2x)</span>
+          </label>
+          <button type="submit" class="btn btn-primary" id="createBtn">创建虚拟屏</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>本插件托管的虚拟屏</h2>
+        <span class="badge" id="managedCount">0</span>
+      </div>
+      <div class="list" id="managedList">
+        <div class="empty">当前没有运行中的虚拟显示器</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>系统全部在线显示器</h2>
+        <span class="badge" id="allCount">0</span>
+      </div>
+      <div class="list" id="allDisplayList">
+        <div class="empty">暂无数据</div>
+      </div>
+    </section>
+
+    <p class="footnote">
+      基于 macOS CGVirtualDisplay 运行，停用插件或关闭 Cindy 时虚拟显示器会自动断开。用于无头 Mac 远程桌面 / 保活时，请配合系统「自动登录」并关闭息屏锁屏。
+    </p>
+  </div>
+  <script src="/panel.js"></script>
+</body>
+</html>
